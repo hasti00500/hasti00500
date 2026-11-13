@@ -3,39 +3,39 @@ const app = new PIXI.Application();
 await app.init({ resizeTo: window, background: "#07040f", antialias: true });
 document.body.prepend(app.canvas);
 
-// Fyra lager: prickar längst bak, sen bilder, blixtar ovanpå, och en vit flash överst
+// Här är det fyra lager: prickar längst bak, bilder, blixtar, och en vit flash
 const dots = new PIXI.Graphics();
 const pics = new PIXI.Container();
 const bolts = new PIXI.Graphics();
 const flash = new PIXI.Graphics();
 app.stage.addChild(dots, pics, bolts, flash);
 
-// alla bilder som svävar runt
+
 const sprites = []; 
 
-// input
+
 const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 window.addEventListener("pointermove", (e) => {
   mouse.x = e.clientX;
   mouse.y = e.clientY;
 });
-// Klick = blixt där man klickar
+// När man klickar kommer blixt på samma ställe
 window.addEventListener("pointerdown", (e) => strike(e.clientX, e.clientY));
-// Mellanslag = blixt på ett slumpat ställe
+// När man trycker på mellanslag kommer blixt på ett slumpmässigt ställe
 window.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     strike(Math.random() * app.screen.width, Math.random() * app.screen.height);
   }
 });
 
-//blixtar
-// alla blixtar som just nu syns
+
+// Alla blixtar som just nu syns
 const activeBolts = []; 
-// hur vit skärmen blinkar
+// Vita flashen
 let flashAlpha = 0;
 
 // Gör en hackig linje mellan två punkter genom att flytta mittpunkten slumpmässigt
-// och sen upprepa på varje delstreck (midpoint displacement)
+// Och upprepa på varje delstreck
 function makeBolt(x1, y1, x2, y2, offset) {
   let pts = [{ x: x1, y: y1 }, { x: x2, y: y2 }];
   for (let i = 0; i < 5; i++) {
@@ -50,13 +50,12 @@ function makeBolt(x1, y1, x2, y2, offset) {
     }
     next.push(pts[pts.length - 1]);
     pts = next;
-    // mindre skakighet för varje varv
     offset /= 2; 
   }
   return pts;
 }
 
-// En blixt från toppen av skärmen ner till (x, y), plus några grenar
+// En blixt från toppen av skärmen ner till (x, y) och några grenar
 function strike(x, y) {
   const main = makeBolt(x + (Math.random() - 0.5) * 300, -10, x, y, 160);
   const paths = [main];
@@ -69,7 +68,7 @@ function strike(x, y) {
   activeBolts.push({ paths, life: 1 });
   flashAlpha = 0.5; // skärmen blinkar vitt
 
-  // bilderna får en knuff åt ett slumpat håll
+  // Bilderna knuffas åt ett random håll
   for (const s of sprites) {
     s.vx += (Math.random() - 0.5) * 14;
     s.vy += (Math.random() - 0.5) * 14;
@@ -91,8 +90,9 @@ for (const file of IMAGE_FILES) {
   try {
     const texture = await PIXI.Assets.load(file);
     const sprite = new PIXI.Sprite(texture);
-    sprite.anchor.set(0.5); // origo i mitten av bilden
-    const baseScale = 180 / texture.height; // alla bilder blir ungefär 180 px höga
+    // Origo i mitten av bilden
+    sprite.anchor.set(0.5); 
+    const baseScale = 180 / texture.height; 
     sprite.scale.set(baseScale);
     sprite.x = Math.random() * app.screen.width;
     sprite.y = Math.random() * app.screen.height;
@@ -100,14 +100,14 @@ for (const file of IMAGE_FILES) {
     pics.addChild(sprite);
     sprites.push({ sprite, baseScale, vx: 0, vy: 0 });
   } catch (err) {
-    // om en fil saknas eller har fel namn hoppar vi bara över den
+    // Om en fil skulle ha fel namn hoppas det över den
     console.warn("Kunde inte ladda bilden:", file);
   }
 }
 
-// varje frame
+
 let time = 0;
-// rave-tempo, prickarna pulserar i takt
+// Rave-tempo, prickarna pulserar i takt
 const BPM = 140; 
 
 app.ticker.add((ticker) => {
@@ -117,7 +117,7 @@ app.ticker.add((ticker) => {
   const beatPhase = ((time / 60000) * BPM) % 1;
   const pulse = Math.pow(1 - beatPhase, 3);
 
-  // Prickrutnätet i två neonfärger som växlar i schackmönster
+  // Prick rutnätet i två neonfärger som växlar
   dots.clear();
   for (const colorIndex of [0, 1]) {
     for (let x = 0, i = 0; x < app.screen.width; x += 34, i++) {
@@ -139,10 +139,11 @@ app.ticker.add((ticker) => {
     const dy = s.sprite.y - mouse.y;
     const dist = Math.hypot(dx, dy);
     if (dist < 160 && dist > 0) {
-      s.vx += (dx / dist) * 0.4; // puffa bort från musen
+      // puttas bort från musen
+      s.vx += (dx / dist) * 0.4; 
       s.vy += (dy / dist) * 0.4;
     }
-    // lite slumprörelse + friktion så de svävar lugnt
+    // lite slumprörelse
     s.vx = s.vx * 0.98 + (Math.random() - 0.5) * 0.05;
     s.vy = s.vy * 0.98 + (Math.random() - 0.5) * 0.05;
     s.sprite.x += s.vx;
@@ -162,7 +163,6 @@ app.ticker.add((ticker) => {
   bolts.clear();
   for (let i = activeBolts.length - 1; i >= 0; i--) {
     const b = activeBolts[i];
-    // försvinner efter ngra sekunder
     b.life -= ticker.deltaMS / 400; 
     if (b.life <= 0) {
       activeBolts.splice(i, 1);

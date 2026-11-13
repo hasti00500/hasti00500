@@ -1,22 +1,21 @@
-/* Mörk rave-bakgrund, neonfärger */
+/* Mörk rave-bakgrund och neonfärger */
 body {
   margin: 0;
   background: #07040f;
   color: #f2e9ff;
   font-family: "Courier New", monospace;
-  /* ingen scroll, canvasen fyller hela fönstret */
   overflow: hidden;
   
 }
 
-/* Pixi-canvasen ligger bakom all text */
+/* Pixi canvasen ligger bakom all text */
 canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
 }
 
-/* Texten ligger överst men ska inte blockera musen */
+/* Texten ska lägga högst upp och inte blockera musen */
 main {
   position: relative;
   z-index: 1;
