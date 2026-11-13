@@ -1,17 +1,42 @@
+/* Mörk rave-bakgrund, neonfärger */
 body {
   margin: 0;
-  font-family: sans-serif;
+  background: #07040f;
+  color: #f2e9ff;
+  font-family: "Courier New", monospace;
+  overflow: hidden; /* ingen scroll, canvasen fyller hela fönstret */
 }
 
-/* The Pixi canvas sits behind the text */
+/* Pixi-canvasen ligger bakom all text */
 canvas {
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
+  inset: 0;
+  z-index: 0;
 }
 
+/* Texten ligger överst men ska inte blockera musen */
 main {
-  max-width: 40rem;
-  padding: 2rem;
+  position: relative;
+  z-index: 1;
+  padding: 40px;
+  max-width: 520px;
+  pointer-events: none;
+}
+
+h1 {
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: clamp(40px, 9vw, 90px);
+  margin: 0 0 10px;
+  letter-spacing: 2px;
+  color: #fff;
+  text-shadow: 0 0 10px #ff2bd6, 0 0 30px #8a2bff;
+}
+
+h2 {
+  color: #3dfcff;
+  text-shadow: 0 0 8px #3dfcff;
+}
+
+ul {
+  padding-left: 18px;
 }
