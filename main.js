@@ -82,8 +82,8 @@ function drawPath(g, pts) {
 // Lägg dina bildfiler i mappen "images" och skriv filnamnen här, t.ex.
 // "images/bild1.jpg". Tom lista = inga bilder, sidan funkar ändå.
 const IMAGE_FILES = [
-  "image/bild1.png",
-  "image/bild2.png",
+  "bild1.png",
+  "bild2.png",
 ];
 
 for (const file of IMAGE_FILES) {
