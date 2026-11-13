@@ -4,7 +4,9 @@ body {
   background: #07040f;
   color: #f2e9ff;
   font-family: "Courier New", monospace;
-  overflow: hidden; /* ingen scroll, canvasen fyller hela fönstret */
+  /* ingen scroll, canvasen fyller hela fönstret */
+  overflow: hidden;
+  
 }
 
 /* Pixi-canvasen ligger bakom all text */

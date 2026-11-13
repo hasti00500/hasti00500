@@ -1,4 +1,4 @@
-// ---------- Starta Pixi ----------
+// Pixi startas
 const app = new PIXI.Application();
 await app.init({ resizeTo: window, background: "#07040f", antialias: true });
 document.body.prepend(app.canvas);
@@ -10,9 +10,10 @@ const bolts = new PIXI.Graphics();
 const flash = new PIXI.Graphics();
 app.stage.addChild(dots, pics, bolts, flash);
 
-const sprites = []; // alla bilder som svävar runt (fylls på längre ner)
+// alla bilder som svävar runt
+const sprites = []; 
 
-// ---------- Input ----------
+// input
 const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 window.addEventListener("pointermove", (e) => {
   mouse.x = e.clientX;
@@ -27,9 +28,11 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-// ---------- Blixtar ----------
-const activeBolts = []; // alla blixtar som just nu syns
-let flashAlpha = 0;     // hur vit skärmen blinkar
+//blixtar
+// alla blixtar som just nu syns
+const activeBolts = []; 
+// hur vit skärmen blinkar
+let flashAlpha = 0;
 
 // Gör en hackig linje mellan två punkter genom att flytta mittpunkten slumpmässigt
 // och sen upprepa på varje delstreck (midpoint displacement)
@@ -47,7 +50,8 @@ function makeBolt(x1, y1, x2, y2, offset) {
     }
     next.push(pts[pts.length - 1]);
     pts = next;
-    offset /= 2; // mindre skakighet för varje varv
+    // mindre skakighet för varje varv
+    offset /= 2; 
   }
   return pts;
 }
@@ -78,9 +82,6 @@ function drawPath(g, pts) {
   for (let i = 1; i < pts.length; i++) g.lineTo(pts[i].x, pts[i].y);
 }
 
-// ---------- Bilder ----------
-// Lägg dina bildfiler i mappen "images" och skriv filnamnen här, t.ex.
-// "images/bild1.jpg". Tom lista = inga bilder, sidan funkar ändå.
 const IMAGE_FILES = [
   "bild1.png",
   "bild2.png",
@@ -104,9 +105,10 @@ for (const file of IMAGE_FILES) {
   }
 }
 
-// ---------- Varje frame ----------
+// varje frame
 let time = 0;
-const BPM = 140; // rave-tempo, prickarna pulserar i takt
+// rave-tempo, prickarna pulserar i takt
+const BPM = 140; 
 
 app.ticker.add((ticker) => {
   time += ticker.deltaMS;
@@ -160,7 +162,8 @@ app.ticker.add((ticker) => {
   bolts.clear();
   for (let i = activeBolts.length - 1; i >= 0; i--) {
     const b = activeBolts[i];
-    b.life -= ticker.deltaMS / 400; // försvinner efter ca 0.4 sek
+    // försvinner efter ngra sekunder
+    b.life -= ticker.deltaMS / 400; 
     if (b.life <= 0) {
       activeBolts.splice(i, 1);
       continue;
