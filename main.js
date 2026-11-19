@@ -5,13 +5,12 @@ document.body.prepend(app.canvas);
 
 // Här är det fyra lager: prickar längst bak, bilder, blixtar, och en vit flash
 const dots = new PIXI.Graphics();
-const pics = new PIXI.Container();
 const bolts = new PIXI.Graphics();
 const flash = new PIXI.Graphics();
-app.stage.addChild(dots, pics, bolts, flash);
+app.stage.addChild(dots, bolts, flash);
 
 
-const sprites = []; 
+
 
 
 const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
@@ -68,11 +67,6 @@ function strike(x, y) {
   activeBolts.push({ paths, life: 1 });
   flashAlpha = 0.5; // skärmen blinkar vitt
 
-  // Bilderna knuffas åt ett random håll
-  for (const s of sprites) {
-    s.vx += (Math.random() - 0.5) * 14;
-    s.vy += (Math.random() - 0.5) * 14;
-  }
 }
 
 // Ritar en lista av punkter som en linje
@@ -81,29 +75,6 @@ function drawPath(g, pts) {
   for (let i = 1; i < pts.length; i++) g.lineTo(pts[i].x, pts[i].y);
 }
 
-const IMAGE_FILES = [
-  "bild1.png",
-  "bild2.png",
-];
-
-for (const file of IMAGE_FILES) {
-  try {
-    const texture = await PIXI.Assets.load(file);
-    const sprite = new PIXI.Sprite(texture);
-    // Origo i mitten av bilden
-    sprite.anchor.set(0.5); 
-    const baseScale = 180 / texture.height; 
-    sprite.scale.set(baseScale);
-    sprite.x = Math.random() * app.screen.width;
-    sprite.y = Math.random() * app.screen.height;
-    sprite.rotation = (Math.random() - 0.5) * 0.4;
-    pics.addChild(sprite);
-    sprites.push({ sprite, baseScale, vx: 0, vy: 0 });
-  } catch (err) {
-    // Om en fil skulle ha fel namn hoppas det över den
-    console.warn("Kunde inte ladda bilden:", file);
-  }
-}
 
 
 let time = 0;
@@ -133,31 +104,6 @@ app.ticker.add((ticker) => {
     dots.fill(colorIndex === 0 ? "#ff2bd6" : "#3dfcff");
   }
 
-  // Bilderna svävar, pulserar i takt och flyr undan musen
-  for (const s of sprites) {
-    const dx = s.sprite.x - mouse.x;
-    const dy = s.sprite.y - mouse.y;
-    const dist = Math.hypot(dx, dy);
-    if (dist < 160 && dist > 0) {
-      // puttas bort från musen
-      s.vx += (dx / dist) * 0.4; 
-      s.vy += (dy / dist) * 0.4;
-    }
-    // lite slumprörelse
-    s.vx = s.vx * 0.98 + (Math.random() - 0.5) * 0.05;
-    s.vy = s.vy * 0.98 + (Math.random() - 0.5) * 0.05;
-    s.sprite.x += s.vx;
-    s.sprite.y += s.vy;
-    s.sprite.rotation += s.vx * 0.002;
-
-    // kommer en bild utanför skärmen dyker den upp på andra sidan
-    if (s.sprite.x < -150) s.sprite.x = app.screen.width + 150;
-    if (s.sprite.x > app.screen.width + 150) s.sprite.x = -150;
-    if (s.sprite.y < -150) s.sprite.y = app.screen.height + 150;
-    if (s.sprite.y > app.screen.height + 150) s.sprite.y = -150;
-
-    s.sprite.scale.set(s.baseScale * (1 + pulse * 0.1));
-  }
 
   // Blixtarna tonas ut och tas bort när de är slut
   bolts.clear();
