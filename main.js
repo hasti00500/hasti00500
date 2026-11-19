@@ -10,9 +10,6 @@ const flash = new PIXI.Graphics();
 app.stage.addChild(dots, bolts, flash);
 
 
-
-
-
 const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 window.addEventListener("pointermove", (e) => {
   mouse.x = e.clientX;
